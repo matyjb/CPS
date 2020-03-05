@@ -3,11 +3,6 @@ import sys;
 import matplotlib.pyplot as plt
 import numpy as np 
 
-# delay = float(input("Podaj opóznienie w sekundach: "))
-# freq = float(input("Podaj częstotliwość w hz: "))
-# lvl0 = float(input("Podaj poziom sygnalu: "))
-# lvl1 = float(input("Podaj poziom sygnalu opóźnionego: "))
-# samples = float(input("Podaj ilosc probek na okres: "))
 delay = float(sys.argv[1])
 freq = float(sys.argv[2])
 lvl0 = float(sys.argv[3])
@@ -15,25 +10,30 @@ lvl1 = float(sys.argv[4])
 samples = float(sys.argv[5])
 # samples = 44100; #per second
 
+y1StartIndex = math.floor(samples*delay)
 lenght = delay + 1
 
 x = np.linspace(0 , lenght, samples*lenght)
-y = np.sin(x*freq)
+y0 = lvl0 * np.sin(x*freq)
+y1 = lvl1 * np.sin((x+delay)*freq)
+y2 = y0 + y1
 
-x0 = x.copy()
-y0 = lvl0*y
-
-x1 = x+delay
-y1 = lvl1*y
-
-z = y0.copy()
-for i in range(math.floor(len(y1)-samples*delay)):
-  z[math.floor(samples*delay) + i] += y1[i]
+y1[:y1StartIndex] = 0
+y2[:y1StartIndex] = y0[:y1StartIndex]
 
 
-plt.plot(x0,y0, "-b", label="wejściowy")
-plt.plot(x1,y1, "-r", label="opóźniony")
-plt.plot(x0,z, "-g", label="wynikowy")
-plt.legend(loc="upper left")
-plt.xlim(0,lenght)
+fig, (ax, ax_table) = plt.subplots(nrows=2,figsize=(12,8), gridspec_kw=dict(height_ratios=[7,1])) #)
+ax_table.axis("off")
+
+ax.plot(x,y0, "-b", label="wejściowy")
+ax.plot(x[y1StartIndex:],y1[y1StartIndex:], "-r", label="opóźniony")
+ax.plot(x,y2, "-g", label="wynikowy")
+ax.legend(loc="upper left")
+ax.set_xlim(0,lenght)
+ax.set_xlabel("czas [s]")
+
+cellText=[[str(delay)+"s", str(freq)+" Hz", lvl0, lvl1, samples]]
+colLabels=['opóźnienie','częstotliwość','poziom wejściowy', 'poziom opóźnienia', 'ilość próbek na sekunde']
+ax_table.table(colLabels=colLabels,cellText=cellText)
+
 plt.show()
