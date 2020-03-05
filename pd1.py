@@ -11,16 +11,16 @@ samples = float(sys.argv[5])
 # samples = 44100; #per second
 
 #help values
-y1StartIndex = math.floor(samples*delay)
+delayStartIndex = math.floor(samples*delay)
 lenght = delay + 1
 
 x = np.linspace(0 , lenght, samples*lenght)
 y0 = lvl0 * np.sin(x*freq)
 y1 = lvl1 * np.sin((x+delay)*freq)
-#sygnał opozniony nie istnieje az do momentu opoznienia
+#sygnał opozniony nie istnieje wczesniej
 #(=0 by dało sie dodać do wynikowego)
-#przy plotowaniu te zera są ucinane tej tablicy
-y1[:y1StartIndex] = 0
+#przy plotowaniu te zera są ucinane z tej tablicy
+y1[:delayStartIndex] = 0
 # suma sygnałów
 y2 = y0 + y1
 
@@ -28,8 +28,8 @@ fig, (ax, ax_table) = plt.subplots(nrows=2,figsize=(12,8), gridspec_kw=dict(heig
 ax_table.axis("off")
 
 ax.plot(x,y0, "-b", label="wejściowy")
-#przycinanie sygnału opoznionego (bo nie itnieje aż do momentu opoznienia)
-ax.plot(x[y1StartIndex:],y1[y1StartIndex:], "-r", label="opóźniony")
+#przycinanie sygnału opoznionego (bo nie istnieje wczesniej)
+ax.plot(x[delayStartIndex:],y1[delayStartIndex:], "-r", label="opóźniony")
 ax.plot(x,y2, "-g", label="wynikowy")
 ax.legend(loc="upper left")
 ax.set_xlim(0,lenght)
