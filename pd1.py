@@ -14,7 +14,7 @@ samples = float(sys.argv[5])
 delayStartIndex = math.floor(samples*delay)
 lenght = delay + 1
 
-x = np.linspace(0 , lenght, samples*lenght)
+x = np.linspace(0, lenght, math.floor(samples*lenght))
 y0 = lvl0 * np.sin(x*freq)
 y1 = lvl1 * np.sin((x+delay)*freq)
 #sygnał opozniony nie istnieje wczesniej
