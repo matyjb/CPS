@@ -16,7 +16,7 @@ lenght = delay + 1
 
 x = np.linspace(0, lenght, math.floor(samples*lenght))
 y0 = lvl0 * np.sin(x*freq)
-y1 = lvl1 * np.sin((x+delay)*freq)
+y1 = lvl1 * np.sin((x-delay)*freq)
 #sygnał opozniony nie istnieje wczesniej
 #(=0 by dało sie dodać do wynikowego)
 #przy plotowaniu te zera są ucinane z tej tablicy
