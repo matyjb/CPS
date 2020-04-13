@@ -3,7 +3,7 @@
 # Można dopisać również rysowanie widma amplitudowego
 # (za to można zdobyć ekstra 2 punkty, w zależności od jakości rysunku).
 
-import math
+import math, numpy as np, matplotlib.pyplot as plt
 
 class Sygnal:
   @staticmethod
@@ -27,22 +27,22 @@ class Sygnal:
     okres = int(n/ileOkresow/2)
     return [-amplitude if int(i / okres) % 2 != 0 else amplitude for i in range(n)]
 
-  # @staticmethod
-  # def okresowyProstokąt1(amplitude, ileOkresow, n):
-  #   okres = int(n/ileOkresow/2)
-  #   k = 0
-  #   wartość = amplitude
-  #   wynik = []
+def dft(p):
+  N = len(p)
+  # return [np.sum([probki[n] * np.exp((-2*k*math.pi*n)/N * 1j) for n in range(N)]) for k in range(N)]
+  wynik = []
+  for k in range(N):
+    xk = []
+    for m in range(N):
+      xk.append(p[m]*np.exp(1j*(-2*math.pi*m*k/N)))
+    wynik.append(np.sum(xk))
+  return wynik
+    
 
-  #   for i in range(n):
-  #     wynik.append(wartość)
-      
-  #     k+=1
-      
-  #     if(k == okres):
-  #       if(wartość > 0):
-  #         wartość = -amplitude
-  #       else:
-  #         wartość = amplitude
-  #       k = 0
-  #   return wynik
+# sinus(freq, amplitude, fs, n)
+out = dft(Sygnal.sinus(20, 2, 1000, 50))
+out = [np.absolute(i) for i in out] # absolute(real+imaginary) = moduł
+plt.plot(range(len(out)),out)
+plt.yscale('log')
+plt.show()
+# print(out)
