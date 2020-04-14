@@ -29,6 +29,7 @@ def dft(p):
   return [np.sum([p[n] * np.exp((-2*k*math.pi*n)/N * 1j) for n in range(N)]) for k in range(N)]
 
 def mirror(arr):
+  # łączenie tablicy odwróconej z oryginalną (bez powtarzania arr[0])
   return [arr[-i] for i in range(1,len(arr))] + arr
 
 def draw(x0, y0, x1, y1):
@@ -42,7 +43,6 @@ def draw(x0, y0, x1, y1):
   ax1.grid(True, linestyle='--', linewidth=0.5)
 
   c2 = 'tab:red'
-  # ax2.set_yscale('log')
   ax2.plot(x1, y1, color=c2)
   ax2.set_title('DFT')
   ax2.set_ylabel('amplituda', color=c2)
@@ -51,6 +51,8 @@ def draw(x0, y0, x1, y1):
   ax2.grid(True, linestyle='--', linewidth=0.5)
 
   plt.show()
+
+
 
 n = 600
 Ts = 1 / 800.0
@@ -65,8 +67,7 @@ sygnal2 = Sygnal.sinus(80.0,0.5,Ts,n)
 # sygnal1 = Sygnal.spadekWykładniczy(2,3,Ts,n)
 # sygnal2 = Sygnal.spadekWykładniczy(5,7,Ts,n)
 
-
-sygnal = np.array(sygnal1)# + np.array(sygnal2)
+sygnal = np.array(sygnal1) + np.array(sygnal2)
 
 yf = dft(sygnal)
 xf = np.linspace(-1.0/(2.0*Ts), 1.0/(2.0*Ts), n-1)
