@@ -27,13 +27,6 @@ class Sygnal:
 def dft(p):
   N = len(p)
   return [np.sum([p[n] * np.exp((-2*k*math.pi*n)/N * 1j) for n in range(N)]) for k in range(N)]
-  # wynik = []
-  # for k in range(N):
-  #   xk = []
-  #   for m in range(N):
-  #     xk.append(p[m]*np.exp(1j*(-2*math.pi*m*k/N)))
-  #   wynik.append(np.sum(xk))
-  # return wynik
 
 def mirror(arr):
   return [arr[-i] for i in range(1,len(arr))] + arr
@@ -59,19 +52,6 @@ def draw(x0, y0, x1, y1):
 
   plt.show()
 
-### ze stack overflow
-# N = 600
-# # sample spacing
-# T = 1.0 / 800.0
-# x = np.linspace(0.0, N*T, N)
-# # print(x)
-# y = Sygnal.okresowyProstokąt2(2,3,N)
-# yf = dft(y)
-# xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
-# fig, ax = plt.subplots()
-# ax.plot(xf, 2.0/N * np.abs(yf[:N//2]))
-# plt.show()
-
 n = 600
 Ts = 1 / 800.0
 fstop = n*Ts
@@ -89,7 +69,6 @@ sygnal2 = Sygnal.sinus(80.0,0.5,Ts,n)
 sygnal = np.array(sygnal1)# + np.array(sygnal2)
 
 yf = dft(sygnal)
-# xf = np.linspace(0, 1.0/(2.0*Ts), n/2)
 xf = np.linspace(-1.0/(2.0*Ts), 1.0/(2.0*Ts), n-1)
 yf = 2.0/n * np.abs(yf[:n//2])
 
