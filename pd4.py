@@ -44,7 +44,7 @@ def draw(x0, y0, x1, y1):
 
   c2 = 'tab:red'
   ax2.plot(x1, y1, color=c2)
-  ax2.set_title('DFT')
+  ax2.set_title('Widmo amplitudowe')
   ax2.set_ylabel('amplituda', color=c2)
   ax2.set_xlabel('freq [Hz]', color=c2)
   ax2.tick_params(axis='y', labelcolor=c2)
@@ -52,25 +52,35 @@ def draw(x0, y0, x1, y1):
 
   plt.show()
 
-
+# czy odbijać wykres widma amplitudowego względem OY
+isMirror = True
 
 n = 600
 Ts = 1 / 800.0
 fstop = n*Ts
 x = np.linspace(0,fstop,n)
-sygnal1 = Sygnal.sinus(50.0,1.0,Ts,n)
-sygnal2 = Sygnal.sinus(80.0,0.5,Ts,n)
-# sygnal1 = Sygnal.prostokat(0.05,2,Ts,n)
-# sygnal2 = Sygnal.prostokat(0.35,3,Ts,n)
-# sygnal1 = Sygnal.okresowyProstokąt2(2,3,n)
-# sygnal2 = Sygnal.okresowyProstokąt2(3,7,n)
-# sygnal1 = Sygnal.spadekWykładniczy(2,3,Ts,n)
-# sygnal2 = Sygnal.spadekWykładniczy(5,7,Ts,n)
 
-sygnal = np.array(sygnal1) + np.array(sygnal2)
+# dwa sygnały dla rozrywki
+s1 = Sygnal.sinus(50.0,1.0,Ts,n)
+s2 = Sygnal.sinus(80.0,0.5,Ts,n)
+# s1 = Sygnal.prostokat(0.05,2,Ts,n)
+# s2 = Sygnal.prostokat(0.35,3,Ts,n)
+# s1 = Sygnal.okresowyProstokąt2(2,3,n)
+# s2 = Sygnal.okresowyProstokąt2(3,7,n)
+# s1 = Sygnal.spadekWykładniczy(2,3,Ts,n)
+# s2 = Sygnal.spadekWykładniczy(5,7,Ts,n)
 
-yf = dft(sygnal)
-xf = np.linspace(-1.0/(2.0*Ts), 1.0/(2.0*Ts), n-1)
+# suma sygnałów
+s = np.array(s1) + np.array(s2)
+
+yf = dft(s)
+# obliczanie widma
 yf = 2.0/n * np.abs(yf[:n//2])
 
-draw(x,sygnal,xf,mirror(yf.tolist()))
+# rysowanie
+if(isMirror):
+  xf = np.linspace(-1.0/(2.0*Ts), 1.0/(2.0*Ts), n-1)
+  draw(x,s,xf,mirror(yf.tolist()))
+else:
+  xf = np.linspace(0, 1.0/(2.0*Ts), n/2)
+  draw(x,s,xf,yf)
