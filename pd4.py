@@ -35,8 +35,8 @@ def dft(p):
   #   wynik.append(np.sum(xk))
   # return wynik
 
-def mirror(array):
-  return [array[-i] for i in range(1,len(array))] + array
+def mirror(arr):
+  return [arr[-i] for i in range(1,len(arr))] + arr
 
 def draw(x0, y0, x1, y1):
   fig, (ax1,ax2) = plt.subplots(ncols=2,figsize=(17,6))
@@ -86,11 +86,11 @@ sygnal2 = Sygnal.sinus(80.0,0.5,Ts,n)
 # sygnal2 = Sygnal.spadekWykładniczy(5,7,Ts,n)
 
 
-sygnal = np.array(sygnal1) + np.array(sygnal2)
+sygnal = np.array(sygnal1)# + np.array(sygnal2)
 
 yf = dft(sygnal)
-xf = np.linspace(0, 1.0/(2.0*Ts), n/2)
-
+# xf = np.linspace(0, 1.0/(2.0*Ts), n/2)
+xf = np.linspace(-1.0/(2.0*Ts), 1.0/(2.0*Ts), n-1)
 yf = 2.0/n * np.abs(yf[:n//2])
 
-draw(x,sygnal,xf,yf)
+draw(x,sygnal,xf,mirror(yf.tolist()))
