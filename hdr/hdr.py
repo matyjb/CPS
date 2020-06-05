@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 from PIL import Image
+import numpy as np
 
 def loadFile():
   filenames = askopenfilename(filetypes=[("image files", ".jpg .png .bmp")], multiple=True)
@@ -28,7 +29,11 @@ def doHDR():
   result = Image.new("RGB",size)
   for x in range(size[0]):
     for y in range(size[1]):
-      pass
+      pixelSum = 0
+      for im in images:
+        pixelSum += np.array(im.getpixel((x,y)))
+      newPixel = np.round(pixelSum / float(len(images))).astype(int)
+      result.putpixel((x,y),tuple(newPixel))
 
   result.show(title="hdr")
 
