@@ -4,9 +4,8 @@ from PIL import Image
 import numpy as np
 
 def loadFile():
-  filenames = askopenfilename(filetypes=[("image files", ".jpg .png .bmp")], multiple=True)
+  filenames = askopenfilename(filetypes=[("Image files", ".jpg .png .bmp")], multiple=True)
   for filename in filenames:
-    print(filename)
     if filename not in imageList.get(0,imageList.size()):
       imageList.insert("end", filename)
   l.config(text="Załadowane obrazy " + str(imageList.size()))
@@ -17,8 +16,8 @@ def removeFiles():
   l.config(text="Załadowane obrazy " + str(imageList.size()))
 
 def doHDR():
-  print("do hdr")
   images = []
+  print("odczytywanie plików")
   for path in imageList.get(0,imageList.size()):
     images.append(Image.open(path))
   
@@ -26,15 +25,20 @@ def doHDR():
     return
   
   size = images[0].size
-  result = Image.new("RGB",size)
-  for x in range(size[0]):
-    for y in range(size[1]):
-      pixelSum = 0
-      for im in images:
-        pixelSum += np.array(im.getpixel((x,y)))
-      newPixel = np.round(pixelSum / float(len(images))).astype(int)
-      result.putpixel((x,y),tuple(newPixel))
+  resultArr = 0
+  print("sumowanie obrazów")
+  for (im,idx) in zip(images,range(len(images))):
+    print(idx+1,"/",len(images))
+    if size != im.size:
+      print("Obrazy nie są tych samych rozmiarów! Operacje anulowano")
+      return
+    resultArr += np.asarray(im).astype("float")
+  resultArr = np.round(resultArr / len(images)).astype("uint8")
 
+  print("tworzenie nowego obrazu")
+  result = Image.frombytes("RGB",size,resultArr)
+
+  print("wyświetlenie")
   result.show(title="hdr")
 
 root = Tk()
