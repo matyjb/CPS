@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
+from tkinter.messagebox import showerror
 from PIL import Image
 import numpy as np
 
@@ -22,6 +23,7 @@ def doHDR():
     images.append(Image.open(path))
   
   if len(images) == 0:
+    showerror(title="Error", message="Nie podano żadnych obrazów")
     return
   
   size = images[0].size
@@ -30,7 +32,7 @@ def doHDR():
   for (im,idx) in zip(images,range(len(images))):
     print(idx+1,"/",len(images))
     if size != im.size:
-      print("Obrazy nie są tych samych rozmiarów! Operacje anulowano")
+      showerror(title="Error", message="Obrazy nie są tych samych rozmiarów! Operacje anulowano")
       return
     resultArr += np.asarray(im).astype("float")
   resultArr = np.round(resultArr / len(images)).astype("uint8")
@@ -45,7 +47,7 @@ root = Tk()
 root.title("HDR")
 root.resizable(False, False)
 
-l = Label(root, text="Dodane obrazy")
+l = Label(root, text="Załadowane obrazy 0")
 l.grid(row=0, pady=2)
 
 imageList = Listbox(root, width=100,height=10, selectmode=MULTIPLE)
