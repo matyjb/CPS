@@ -9,35 +9,35 @@ def loadFile():
   for filename in filenames:
     if filename not in imageList.get(0,imageList.size()):
       imageList.insert("end", filename)
-  l.config(text="Załadowane obrazy " + str(imageList.size()))
+  l.config(text="Dodane obrazy " + str(imageList.size()))
 
 def removeFiles():
   for idx in reversed(imageList.curselection()):
     imageList.delete(idx)
-  l.config(text="Załadowane obrazy " + str(imageList.size()))
+  l.config(text="Dodane obrazy " + str(imageList.size()))
 
 def doHDR():
-  images = []
-  print("odczytywanie plików")
-  for path in imageList.get(0,imageList.size()):
-    images.append(Image.open(path))
+  imagesPaths = imageList.get(0,imageList.size())
   
-  if len(images) == 0:
+  if len(imagesPaths) == 0:
     showerror(title="Error", message="Nie podano żadnych obrazów")
     return
-  
-  size = images[0].size
+
   resultArr = 0
   print("sumowanie obrazów")
-  for (im,idx) in zip(images,range(len(images))):
-    print(idx+1,"/",len(images))
-    if size != im.size:
+  for (path,idx) in zip(imagesPaths,range(len(imagesPaths))):
+    print(idx+1,"/",len(imagesPaths))
+    im = Image.open(path)
+    try:
+      resultArr += np.asarray(im).astype("float")
+    except:
       showerror(title="Error", message="Obrazy nie są tych samych rozmiarów! Operacje anulowano")
       return
-    resultArr += np.asarray(im).astype("float")
-  resultArr = np.round(resultArr / len(images)).astype("uint8")
+    im.close()
+  resultArr = np.round(resultArr / len(imagesPaths)).astype("uint8")
 
   print("tworzenie nowego obrazu")
+  size = (np.size(resultArr, axis=1),np.size(resultArr, axis=0))
   result = Image.frombytes("RGB",size,resultArr)
 
   print("wyświetlenie")
@@ -47,7 +47,7 @@ root = Tk()
 root.title("HDR")
 root.resizable(False, False)
 
-l = Label(root, text="Załadowane obrazy 0")
+l = Label(root, text="Dodane obrazy 0")
 l.grid(row=0, pady=2)
 
 imageList = Listbox(root, width=100,height=10, selectmode=MULTIPLE)
